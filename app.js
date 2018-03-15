@@ -21,6 +21,8 @@ const accessLogStream = rfs('access.log', {
     interval: '1d', // rotate daily
     path: logDirectory
 })
+app.use(bodyParser.json()); // for parsing application/json
+app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 
 // setup the logger
 app.use(morgan('combined', {
@@ -36,5 +38,10 @@ app.use(bodyParser.urlencoded({
 app.use(cookieParser());
 
 app.use('/api/v1', require('./router'));
+
+//error handler
+app.use((err,req,res,next)=>{
+
+})
 
 module.exports = app;
