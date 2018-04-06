@@ -1,5 +1,8 @@
+'use strict'
+
+const apiResponse = require("./helpers/apiResponse");
 const express = require('express');
-const helmet = require('helmet')
+const helmet = require('helmet');
 const path = require('path');
 const morgan = require('morgan');
 const fs = require('fs');
@@ -13,8 +16,8 @@ var db = require('./config/db').connect();
 
 var app = express();
 
-const logDirectory = path.join(__dirname, 'log')
-fs.existsSync(logDirectory) || fs.mkdirSync(logDirectory)
+const logDirectory = path.join(__dirname, 'log');
+fs.existsSync(logDirectory) || fs.mkdirSync(logDirectory);
 
 // create a rotating write stream
 const accessLogStream = rfs('access.log', {
@@ -40,8 +43,10 @@ app.use(cookieParser());
 app.use('/api/v1', require('./router'));
 
 //error handler
-app.use((err,req,res,next)=>{
-
+app.use((err, req, res, next) => {
+    if (err) {
+        apiResponse.sendJson(req, res, 500, err.message);
+    }
 })
 
 module.exports = app;
