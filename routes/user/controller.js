@@ -4,12 +4,11 @@ const mongoose = require('mongoose');
 const Service = require('./service');
 const apiResponse = require('../../helpers/apiResponse')
 const Model = require('./model');
+const logger = require('../../helpers/logger');
+const common = require('../../helpers/common');
 
 module.exports = {
     getAll: (req, res, next) => {
-        console.log("------")
-        res.end('from all')
-        //return apiResponse.sendJson(req, res, 200, "predefined message", [])
     },
     getById: (req, res, next) => {
 
