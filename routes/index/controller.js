@@ -20,9 +20,15 @@ module.exports = {
         }
     },
     save: async (req, res, next) => {
-        let objectToSave = {
-            name: 'mohit'
+        let objectToSave = {}
+        const body = req.body;
+
+        for (const key in body) {
+            if (body.hasOwnProperty(key)) {
+                objectToSave[key] = body[key];
+            }
         }
+
         try {
             let data = await Service.save(objectToSave);
             apiResponse.sendJson(req, res, 201, null, data);
@@ -46,17 +52,45 @@ module.exports = {
 
     },
     patchUpdateAll: async (req, res, next) => {
-
+        let updateObject = {
+            name: 'mohit'
+        }
+        let searchObject = {
+            name: "mohit 2"
+        }
+        try {
+            let data = await Service.updateAll(searchObject, updateObject);
+            apiResponse.sendJson(req, res, 201, null, data);
+        } catch (err) {
+            next(err);
+        }
     },
     deleteAll: async (req, res, next) => {
+        let searchObject = {
+            name: "mohit"
+        }
 
+        try {
+            let data = await Service.removeAll(searchObject);
+            apiResponse.sendJson(req, res, 201, null, data);
+        } catch (err) {
+            next(err);
+        }
     },
 
     /*
     /---------------------------ID LEVEL-----------------
     */
-    getById: (req, res, next) => {
-
+    getById: async (req, res, next) => {
+        let searchObject = {
+            _id: req.params.id
+        }
+        try {
+            let data = await Service.getById(req.params.id);
+            apiResponse.sendJson(req, res, 200, "test", data);
+        } catch (err) {
+            next(err);
+        }
     },
     saveAtId: (req, res, next) => {
 

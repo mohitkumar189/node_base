@@ -7,6 +7,9 @@ const common = require('../../helpers/common');
 const _ = require('underscore');
 
 module.exports = {
+    /*
+    /---------------------------ROOT LEVEL-----------------
+    */
     save: (dataForSaving) => {
         if (!_.isEmpty(dataForSaving)) {
             dataForSaving._id = new mongoose.Types.ObjectId();
@@ -52,5 +55,34 @@ module.exports = {
                     reject(err);
                 })
         })
-    }
+    },
+    removeAll: (searchObject) => {
+        return new Promise((resolve, reject) => {
+            Model
+                .remove(searchObject)
+                .exec()
+                .then((data) => {
+                    resolve(data);
+                })
+                .catch((err) => {
+                    reject(err);
+                })
+        })
+    },
+    /*
+    /---------------------------ID LEVEL-----------------
+    */
+    getById: (searchObject, filteredData) => {
+        return new Promise((resolve, reject) => {
+            Model
+                .findById(searchObject, filteredData)
+                .exec()
+                .then((data) => {
+                    resolve(data);
+                })
+                .catch((err) => {
+                    reject(err);
+                })
+        })
+    },
 }
