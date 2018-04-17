@@ -88,4 +88,12 @@ app.use((err, req, res, next) => {
     }
 })
 
+process.on('uncaughtException', (exception) => {
+    console.log("-----Exception occured---");
+})
+process.on('unhandledRejection', (exception) => {
+    console.log("-----Exception occured---");
+})
+
 module.exports = app;
+
