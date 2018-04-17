@@ -22,5 +22,15 @@
                 "action": "allow"
             }
         ]
+    },
+    {
+        "group": "tester",
+        "permissions": [
+            {
+                "resource": "api-docs/",
+                "methods": "*",
+                "action": "allow"
+            }
+        ]
     }
 ]
