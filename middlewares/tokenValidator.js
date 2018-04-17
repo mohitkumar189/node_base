@@ -4,7 +4,7 @@ module.exports = async (req, res, next) => {
     if (req.token) {
         try {
             const payLoad = await authController.verifyToken(req.token);
-            req.payLoad = payLoad;
+            req.decoded = payLoad;
             return next();
         } catch (error) {
             return next(new Error("Invalid access token"));

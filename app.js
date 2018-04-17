@@ -9,14 +9,16 @@ const morgan = require('morgan');
 const fs = require('fs');
 const rfs = require('rotating-file-stream')
 const bearerToken = require('express-bearer-token');
+//const auth = require('express-rbac');
 
+const acl = require('express-acl');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const logger = require('./helpers/logger')
 
 var db = require('./config/db').connect();
 
-var app = express();
+const app = express();
 
 const logDirectory = path.join(__dirname, 'log');
 fs.existsSync(logDirectory) || fs.mkdirSync(logDirectory);
@@ -37,17 +39,39 @@ app.use(morgan('combined', {
 
 app.use(helmet());
 
+app.use(bearerToken());//It manages the token variable in request
+app.use(tokenValidator);//It manages the token variable in request
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended: false
 }));
 
 app.use(cookieParser());
-app.use(bearerToken());//It manages the token variable in request
-app.use(tokenValidator);//It manages the token variable in request
+
+/*
+    ------------------------ACL CONFIG START-------------------
+*/
+let responseObject = {
+    status: 'Access Denied',
+    message: 'You are not authorized to access this resource'
+};
+
+let configObject = {
+    baseUrl: '/',
+    searchPath: 'decoded.role', //will search for role in req.decoded.role
+    defaultRole: 'anonymous'
+};
+
+acl.config(configObject, responseObject);
+
+app.use(acl.authorize);
+/*
+    ------------------------ACL CONFIG END-------------------
+*/
 
 app.use(function (req, res) {
-    res.json(req.payLoad);
+    res.json(req.decoded);
 });
 
 app.use('/api/v1', require('./router'));

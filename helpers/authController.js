@@ -24,7 +24,7 @@ module.exports = {
         options.audience = "WEB";
         options.issuer = "SERVER";
 
-        if (!_.isEmpty(signingObject)) {
+        if (_.isEmpty(signingObject)) {
             return null;
         }
         try {
@@ -43,3 +43,11 @@ module.exports = {
         });
     }
 }
+
+/*
+console.log(
+    module.exports.generateToken({
+        role: "admin"
+    })
+)
+*/
