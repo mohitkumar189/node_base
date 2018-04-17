@@ -1,12 +1,14 @@
 'use strict'
 
 const apiResponse = require("./helpers/apiResponse");
+const tokenValidator = require('./middlewares/tokenValidator');
 const express = require('express');
 const helmet = require('helmet');
 const path = require('path');
 const morgan = require('morgan');
 const fs = require('fs');
 const rfs = require('rotating-file-stream')
+const bearerToken = require('express-bearer-token');
 
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
@@ -24,6 +26,7 @@ const accessLogStream = rfs('access.log', {
     interval: '1d', // rotate daily
     path: logDirectory
 })
+
 app.use(bodyParser.json()); // for parsing application/json
 app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 
@@ -31,6 +34,7 @@ app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x
 app.use(morgan('combined', {
     stream: accessLogStream
 }))
+
 app.use(helmet());
 
 app.use(bodyParser.json());
@@ -39,6 +43,12 @@ app.use(bodyParser.urlencoded({
 }));
 
 app.use(cookieParser());
+app.use(bearerToken());//It manages the token variable in request
+app.use(tokenValidator);//It manages the token variable in request
+
+app.use(function (req, res) {
+    res.json(req.payLoad);
+});
 
 app.use('/api/v1', require('./router'));
 

@@ -1,8 +1,9 @@
 'use strict'
 
-var jwt = require('jsonwebtoken');
-var bcrypt = require('bcryptjs');
-var config = require('../config/config').config();
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
+const config = require('../config/config').config();
+const _ = require('underscore');
 
 module.exports = {
     generateSaltPass: (stringPassword) => {
@@ -19,11 +20,11 @@ module.exports = {
     generateToken: (signingObject) => {
         let options = {};
         options.algorithm = 'HS256';
-        options.expiresIn = 100;
+        options.expiresIn = 100000;
         options.audience = "WEB";
         options.issuer = "SERVER";
 
-        if (!signingObject) {
+        if (!_.isEmpty(signingObject)) {
             return null;
         }
         try {
@@ -33,11 +34,12 @@ module.exports = {
         }
     },
     verifyToken: (token) => {
-        try {
-            return jwt.verify(token, config.SECRET_KEY);
-        } catch (error) {
-            console.log(error);
-            return null;
-        }
+        return new Promise((resolve, reject) => {
+            try {
+                resolve(jwt.verify(token, config.SECRET_KEY));
+            } catch (error) {
+                reject(error);
+            }
+        });
     }
 }
