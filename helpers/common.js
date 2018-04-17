@@ -1,3 +1,9 @@
+'use strict'
+var moment = require('moment');
+
+console.log(moment.locale());
+console.log(moment());
+
 exports.isSame = function (str1, str2) {
     if (str1 && str2) {
         if (str1 == str2) return true;
@@ -7,7 +13,7 @@ exports.isSame = function (str1, str2) {
     }
 }
 exports.currentDate = function () {
-    return new Date();
+    return new moment();
 }
 
 exports.contentType = function (content) {
