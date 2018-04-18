@@ -1,9 +1,6 @@
 'use strict'
 var moment = require('moment');
 
-console.log(moment.locale());
-console.log(moment());
-
 exports.isSame = function (str1, str2) {
     if (str1 && str2) {
         if (str1 == str2) return true;

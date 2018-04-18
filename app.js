@@ -16,11 +16,26 @@ const swaggerUi = require('swagger-ui-express'),
 const acl = require('express-acl');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
-const logger = require('./helpers/logger')
+const logger = require('./helpers/logger');
 
-var db = require('./config/db').connect();
+const db = require('./config/db').connect();
 
 const app = express();
+
+const upload = require('./helpers/fileUploader');
+
+app.post('/upload', (req, res, next) => {
+    console.log("request to upload file");
+    console.log(req.file);
+    upload(req, res, (err) => {
+        if (err) {
+            res.json(err)
+        } else {
+            console.log(req.file);
+            res.send("file uploaded");
+        }
+    })
+})
 
 const logDirectory = path.join(__dirname, 'log');
 fs.existsSync(logDirectory) || fs.mkdirSync(logDirectory);
@@ -88,12 +103,13 @@ app.use((err, req, res, next) => {
     }
 })
 
+/*
 process.on('uncaughtException', (exception) => {
-    console.log("-----Exception occured---");
+    console.log("-----Exception occured---"+exception);
 })
 process.on('unhandledRejection', (exception) => {
     console.log("-----Exception occured---");
 })
-
+*/
 module.exports = app;
 
