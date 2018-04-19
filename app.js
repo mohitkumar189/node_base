@@ -25,8 +25,6 @@ const app = express();
 const upload = require('./helpers/fileUploader');
 
 app.post('/upload', (req, res, next) => {
-    console.log("request to upload file");
-    console.log(req.file);
     upload(req, res, (err) => {
         if (err) {
             res.json(err)
