@@ -1,5 +1,5 @@
-/node_modules/*
+node_modules/*
 log/*
 *.log
 *.DS_Store
-*.gitignore
+testing.js
