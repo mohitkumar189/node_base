@@ -1,6 +1,5 @@
 'use strict'
 
-const mongoose = require('mongoose');
 const Service = require('./service');
 const apiResponse = require('../../helpers/apiResponse')
 const Model = require('./model');
@@ -82,14 +81,28 @@ module.exports = {
     /---------------------------ID LEVEL-----------------
     */
     getById: async (req, res, next) => {
-        let searchObject = {
-            _id: req.params.id
-        }
-        try {
-            let data = await Service.getById(req.params.id);
-            apiResponse.sendJson(req, res, 200, "test", data);
-        } catch (err) {
-            next(err);
+        if (req.params.id == 'login') {
+            //login user
+            res.json("login")
+        } else if (req.params.id == 'register') {
+            //register user
+            res.json("register")
+        } else if (req.params.id == 'logout') {
+            //logout user
+        } else {
+            let searchObject = {
+                _id: req.params.id
+            }
+            if (common.isValidId(req.params.id)) {
+                try {
+                    let data = await Service.getById(req.params.id);
+                    apiResponse.sendJson(req, res, 200, "test", data);
+                } catch (err) {
+                    next(err);
+                }
+            } else {
+                next(new Error("Invalid object id"));
+            }
         }
     },
     saveAtId: (req, res, next) => {

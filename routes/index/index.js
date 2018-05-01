@@ -12,7 +12,6 @@ router.route('/')
     .patch(Controller.patchUpdateAll)
     .delete(Controller.deleteAll);
 
-
 router.route('/:id')
     .all((req, res, next) => {
         next()
