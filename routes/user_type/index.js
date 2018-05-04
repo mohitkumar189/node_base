@@ -22,14 +22,4 @@ router.route('/:id')
     .patch(Controller.patchUpdateAtId)
     .delete(Controller.deleteAtId);
 
-router.route('/:id/:action')
-    .all((req, res, next) => {
-        next()
-    })
-    .get(Controller.getAction)
-    .post(Controller.saveAction)
-    .put(Controller.updateAction)
-    .patch(Controller.patchUpdateAction)
-    .delete(Controller.deleteAction);
-
 module.exports = router;

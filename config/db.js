@@ -24,7 +24,6 @@ module.exports.connect = function (callback) {
             console.log("---NOT CONNECTED---" + err)
             if (callback) callback(err);
         });
-
 };
 
 module.exports.disconnect = function (cb) {

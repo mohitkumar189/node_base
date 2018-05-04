@@ -24,15 +24,15 @@ const app = express();
 
 const upload = require('./helpers/fileUploader');
 
-app.post('/upload', (req, res, next) => {
-    upload(req, res, (err) => {
-        if (err) {
-            res.json(err)
-        } else {
-            console.log(req.file);
-            res.send("file uploaded");
-        }
-    })
+app.post('/upload', upload.single('image'), (req, res) => {
+    console.log(req);
+})
+const authController = require('./helpers/authController');
+app.get('/get-token', (req, res, next) => {
+    const token = authController.generateToken({
+        role: "admin"
+    });
+    res.json(token);
 })
 
 const logDirectory = path.join(__dirname, 'log');
@@ -45,7 +45,9 @@ const accessLogStream = rfs('access.log', {
 })
 
 app.use(bodyParser.json()); // for parsing application/json
-app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({
+    extended: true
+})); // for parsing application/x-www-form-urlencoded
 
 // setup the logger
 app.use(morgan('combined', {
@@ -53,10 +55,21 @@ app.use(morgan('combined', {
 }))
 
 app.use(helmet());
-app.use('/api-docss', swaggerUi.serve, swaggerUi.setup(swaggerDocument));//--------------API DOCS------------------
 
-app.use(bearerToken());//It manages the token variable in request
-app.use(tokenValidator);//It manages the token variable in request
+//--------------API DOCS------------------
+app.use('/api-docss', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
+//It manages the token variable in request
+const reqTokenObj = {
+    bodyKey: 'access_token',
+    queryKey: 'access_token',
+    headerKey: 'Bearer',
+    reqKey: 'token'
+};
+app.use(bearerToken(reqTokenObj));
+
+//It validate the token variable in request
+app.use(tokenValidator);
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
@@ -82,7 +95,6 @@ let configObject = {
 acl.config(configObject, responseObject);
 
 app.use(acl.authorize);
-
 /*
     ------------------------ACL CONFIG END-------------------
 */
@@ -93,7 +105,9 @@ app.use(function (req, res) {
 });
 */
 
+//Route Handler
 app.use('/api/v1', require('./router'));
+
 //error handler
 app.use((err, req, res, next) => {
     if (err) {
@@ -109,5 +123,5 @@ process.on('unhandledRejection', (exception) => {
     console.log("-----Exception occured---");
 })
 */
-module.exports = app;
 
+module.exports = app;

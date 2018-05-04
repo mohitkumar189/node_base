@@ -21,12 +21,13 @@ module.exports = {
     save: async (req, res, next) => {
         let objectToSave = {}
         const body = req.body;
-
         for (const key in body) {
             if (body.hasOwnProperty(key)) {
                 objectToSave[key] = body[key];
             }
         }
+        objectToSave['type'] = body.type;
+        objectToSave['user_role'] = body.user_role;
 
         try {
             let data = await Service.save(objectToSave);
@@ -48,7 +49,6 @@ module.exports = {
         } catch (err) {
             next(err);
         }
-
     },
     patchUpdateAll: async (req, res, next) => {
         let updateObject = {
@@ -65,10 +65,16 @@ module.exports = {
         }
     },
     deleteAll: async (req, res, next) => {
-        let searchObject = {
-            name: "mohit"
-        }
+        let searchObject = {};
 
+        const body = req.body;
+        if (body) {
+            for (const key in body) {
+                if (body.hasOwnProperty(key)) {
+                    searchObject[key] = body[key];
+                }
+            }
+        }
         try {
             let data = await Service.removeAll(searchObject);
             apiResponse.sendJson(req, res, 201, null, data);

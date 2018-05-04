@@ -1,7 +1,8 @@
 'use strict'
-var moment = require('moment');
+const moment = require('moment');
+const mongoose = require('mongoose');
 
-exports.isSame = function (str1, str2) {
+exports.isSame = (str1, str2) => {
     if (str1 && str2) {
         if (str1 == str2) return true;
         else return false;
@@ -9,12 +10,16 @@ exports.isSame = function (str1, str2) {
         return false;
     }
 }
-exports.currentDate = function () {
+exports.currentDate = () => {
     return new moment();
 }
 
-exports.contentType = function (content) {
+exports.contentType = (content) => {
     if (content != undefined) {
         return typeof content;
     } else return null;
+}
+
+exports.isValidId = (objectId) => {
+    return mongoose.Types.ObjectId.isValid(objectId);
 }
