@@ -134,9 +134,13 @@ module.exports = {
             const otp = data.otp;
             const oid = data.oid;
             const uid = data.uid;
-            let result = await Service.verifyOtp(uid, oid, otp);
-            logger.logger.info(result);
-            res.json(result);
+            try {
+                let result = await Service.verifyOtp(uid, oid, otp);
+                res.json(result);
+            } catch (err) {
+                next(new Error(err));
+            }
+          //  logger.logger.info(result);
         } else {
             //do what you want
             logger.logger.info("unexpected request");

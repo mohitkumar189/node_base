@@ -159,16 +159,46 @@ module.exports = {
             searchObject.loginTracks = {
                 "_id": new mongoose.Types.ObjectId(oid)
             };
-            logger.logger.info(JSON.stringify(searchObject));
-            Model
-                .find(searchObject)
-                .exec()
+            // logger.logger.info(JSON.stringify(searchObject));
+            Model.aggregate([{
+                    $match: {
+                        _id: new mongoose.Types.ObjectId(uid)
+                    }
+                }, {
+                    $project: {
+                        logins: {
+                            $filter: {
+                                input: '$loginTracks',
+                                as: "tracks",
+                                cond: {
+                                    $eq: ['$$tracks._id', new mongoose.Types.ObjectId(oid)]
+                                }
+                            }
+                        }
+                    }
+                }]).exec()
                 .then((data) => {
-                    resolve(data);
+                    if (!_.isEmpty(data)) {
+                        const otp = data[0]['logins'][0]['otp'];
+                        logger.logger.info("otp::" + otp);
+                        resolve(data);
+                    } else {
+                        reject("no login found")
+                    }
                 })
                 .catch((err) => {
                     reject(err);
                 })
+            /* Model
+                 .find(searchObject)
+                 .exec()
+                 .then((data) => {Ï
+                     resolve(data);
+                 })
+                 .catch((err) => {
+                     reject(err);
+                 })
+             */
         })
     }
 }
