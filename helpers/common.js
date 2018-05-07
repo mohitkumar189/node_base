@@ -23,3 +23,9 @@ exports.contentType = (content) => {
 exports.isValidId = (objectId) => {
     return mongoose.Types.ObjectId.isValid(objectId);
 }
+exports.isValidPhone = (phone) => {
+    return true;
+}
+exports.generateOtp = (length) => {
+    return '1234';
+}

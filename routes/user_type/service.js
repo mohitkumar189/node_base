@@ -12,7 +12,12 @@ module.exports = {
     */
     save: (dataForSaving) => {
         if (!_.isEmpty(dataForSaving)) {
-            dataForSaving._id = new mongoose.Types.ObjectId();
+            if (!dataForSaving._id) {
+                dataForSaving._id = new mongoose.Types.ObjectId();
+            }
+            if (!dataForSaving.added_date) {
+                dataForSaving.added_date = common.currentDate();
+            }
             let model = new Model(dataForSaving);
             return new Promise((resolve, reject) => {
                 model
@@ -76,6 +81,32 @@ module.exports = {
         return new Promise((resolve, reject) => {
             Model
                 .findById(searchObject, filteredData)
+                .exec()
+                .then((data) => {
+                    resolve(data);
+                })
+                .catch((err) => {
+                    reject(err);
+                })
+        })
+    },
+    updateAtId: (searchObject, updateObject) => {
+        return new Promise((resolve, reject) => {
+            Model
+                .findByIdAndUpdate(searchObject, updateObject)
+                .exec()
+                .then((data) => {
+                    resolve(data);
+                })
+                .catch((err) => {
+                    reject(err);
+                })
+        })
+    },
+    deleteAtId: (searchObject) => {
+        return new Promise((resolve, reject) => {
+            Model
+                .findByIdAndRemove(searchObject)
                 .exec()
                 .then((data) => {
                     resolve(data);

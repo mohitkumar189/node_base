@@ -12,9 +12,8 @@ var schema = new mongoose.Schema({
         default: 1
     },
     user_role: {
-        type: mongoose.Schema.Types.Number,
-        enum:[0,1,2,3],
-        default: 0 //0 -> read only, 1 -> write, 2 -> edit, 3 -> delete
+        type: mongoose.Schema.Types.String,
+        default: 'R' //R -> read only, W -> write, E -> edit, D -> delete
     },
     sort_order: {
         type: mongoose.Schema.Types.Number,

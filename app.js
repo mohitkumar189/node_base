@@ -12,13 +12,14 @@ const bearerToken = require('express-bearer-token');
 const swaggerUi = require('swagger-ui-express'),
     swaggerDocument = require('./swagger.json');
 //const auth = require('express-rbac');
+require('dotenv').config();// configure environment variables
 
 const acl = require('express-acl');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const logger = require('./helpers/logger');
 
-const db = require('./config/db').connect();
+const db = require('./config/db').connect();//connect db
 
 const app = express();
 
