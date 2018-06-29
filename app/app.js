@@ -9,17 +9,26 @@ const morgan = require('morgan');
 const fs = require('fs');
 const rfs = require('rotating-file-stream')
 const bearerToken = require('express-bearer-token');
-const swaggerUi = require('swagger-ui-express'),
-    swaggerDocument = require('./swagger.json');
+const swaggerUi = require('swagger-ui-express');
+const swaggerDocument = require('../swagger.json');
+const config = require('./configs/config')();
+const common = require('./helpers/common');
+
 //const auth = require('express-rbac');
-require('dotenv').config();// configure environment variables
+require('dotenv').config(); // configure environment variables
 
 const acl = require('express-acl');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const logger = require('./helpers/logger');
 
-const db = require('./config/db').connect();//connect db
+const db = require('./configs/db').connect((err, db) => {
+    if (!err) {
+        //db connected
+    } else {
+        //error while connecting db
+    }
+});
 
 const app = express();
 
@@ -36,11 +45,11 @@ app.get('/get-token', (req, res, next) => {
     res.json(token);
 })
 
-const logDirectory = path.join(__dirname, 'log');
+const logDirectory = path.join(common.getRootPath(), 'logs');
 fs.existsSync(logDirectory) || fs.mkdirSync(logDirectory);
 
 // create a rotating write stream
-const accessLogStream = rfs('access.log', {
+const accessLogStream = rfs(config.API_ACCESS_LOGS, {
     interval: '1d', // rotate daily
     path: logDirectory
 })
@@ -67,6 +76,7 @@ const reqTokenObj = {
     headerKey: 'Bearer',
     reqKey: 'token'
 };
+
 app.use(bearerToken(reqTokenObj));
 
 //It validate the token variable in request
@@ -90,7 +100,7 @@ let responseObject = {
 let configObject = {
     baseUrl: '/',
     searchPath: 'decoded.role', //will search for role in req.decoded.role
-    defaultRole: 'anonymous'
+    defaultRole: 'anonymous',
 };
 
 acl.config(configObject, responseObject);
@@ -107,7 +117,7 @@ app.use(function (req, res) {
 */
 
 //Route Handler
-app.use('/api/v1', require('./router'));
+app.use('/api/v1', require('./routes/router'));
 
 //error handler
 app.use((err, req, res, next) => {

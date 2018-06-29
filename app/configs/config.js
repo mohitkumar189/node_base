@@ -1,6 +1,6 @@
-var env = require('./env.json');
+var env = require('./config.json');
 
-exports.config = () => {
+module.exports = () => {
   var node_env = process.env.NODE_ENV || 'development';
   return env[node_env];
-};
+}; 

@@ -2,7 +2,7 @@
 
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
-const config = require('../config/config').config();
+const config = require('../configs/config')();
 const _ = require('underscore');
 
 module.exports = {

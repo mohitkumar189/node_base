@@ -1,10 +1,12 @@
 {
   "development": {
     "MONGO_URI": "mongodb://localhost:27017/bookstore",
-    "SECRET_KEY":"helothisisasecretkey"
+    "SECRET_KEY":"helothisisasecretkey",
+    "API_ACCESS_LOGS":"access.log"
   },
   "production": {
     "MONGO_URI": "mongodb://admin:admin@ds121999.mlab.com:21999/bookstore",
-    "SECRET_KEY":"helothisisasecretkey"
+    "SECRET_KEY":"helothisisasecretkey",
+    "API_ACCESS_LOGS":"access.log"
   }
 }
